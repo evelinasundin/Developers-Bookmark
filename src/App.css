@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700");
+.color-container {
+  background: #f9f0ea;
+  height: 100vh;
+  width: 100vw;
+  position: relative; }
+
+.box {
+  width: 0;
+  height: 0;
+  border: 0 solid transparent;
+  border-right-width: 0px;
+  border-left-width: 600px;
+  border-bottom: 300px solid #ff584c;
+  position: absolute;
+  right: 0;
+  bottom: 0; }
+
+.heading {
+  font-family: "Roboto", serif;
+  font-weight: bold;
+  font-size: 4.5rem;
+  text-align: center;
+  padding-top: 5rem; }
+
+.bigletter {
+  display: inline;
+  font-size: 7rem; }
