@@ -16,12 +16,13 @@ class CreatePost extends Component {
     addPost = () => {
         
             const post = {
-        
+            
               title: this.state.titleValue,
               description: this.state.descriptionValue,
               date: new Date().toLocaleString(),
               url: this.state.urlValue, 
-              category: this.state.categoryValue
+              category: this.state.categoryValue,
+              userID: this.props.uid
             };
         
             db.ref("allPosts").push(post);

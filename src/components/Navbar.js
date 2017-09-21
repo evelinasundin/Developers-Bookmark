@@ -14,13 +14,30 @@ const Navbar = (props) => {
 
 
 <div className="collapse navbar-collapse" id="nav-content">   
-<ul className="navbar-nav pull-right">
+<ul className="navbar-nav ml-auto">
+{/*om INTE användaren är inloggad*/}
+{!props.user && 
 <li className="nav-item">
 <a className="nav-link" href="#" onClick={props.toggleLogin}>Login</a>
 </li>
+}
+{/*om INTE användaren är inloggad*/}
+{!props.user &&
 <li className="nav-item">
-<a className="nav-link" href="#" onClick={props.toggleRegister}>Register</a>
+<a className="nav-link " href="#" onClick={props.toggleRegister}>Register</a>
 </li>
+}
+{/*om användaren ÄR inloggad*/}
+{props.user && <li className="nav-item">
+<a className="nav-link" href="#" onClick={props.signOut}>Log Out</a>
+</li>
+}
+{/*om användaren ÄR inloggad*/}
+{/*{props.user &&
+<li className="nav-item"> 
+<p> Welcome  {props.user.email}! </p>
+</li>
+*/}
 </ul>
 </div>
 </nav>

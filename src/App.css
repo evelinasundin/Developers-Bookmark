@@ -12,17 +12,36 @@
   border-right-width: 0px;
   border-left-width: 600px;
   border-bottom: 300px solid #ff584c;
-  position: absolute;
+  position: fixed;
   right: 0;
-  bottom: 0; }
+  bottom: 0;
+  z-index: 50; }
 
 .heading {
   font-family: "Roboto", serif;
   font-weight: bold;
   font-size: 4.5rem;
   text-align: center;
-  padding-top: 5rem; }
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 2.5%;
+  position: absolute;
+  z-index: 99; }
 
 .bigletter {
   display: inline;
   font-size: 7rem; }
+
+li {
+  list-style: none; }
+
+.navbar-light .navbar-nav .nav-link {
+  color: #ff584c;
+  text-transform: uppercase;
+  font-weight: bold; }
+
+.subheading {
+  font-family: "Roboto", serif;
+  font-weight: normal;
+  font-size: 3rem;
+  margin-top: 3rem; }

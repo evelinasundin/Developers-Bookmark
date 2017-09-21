@@ -26,9 +26,12 @@ $roboto: 'Roboto', serif;
   border-right-width: 0px;
   border-left-width: 600px;
   border-bottom: 300px solid $pink-color;
-  position: absolute; 
+  position: fixed; 
   right: 0;
   bottom: 0;
+  z-index: 50;
+
+  
 }
 
 .heading {
@@ -36,7 +39,12 @@ $roboto: 'Roboto', serif;
   font-weight: bold;
   font-size: 4.5rem;
   text-align: center;
-  padding-top: 5rem;
+  padding-left: 10%;
+  padding-right: 10%; 
+  padding-top: 2.5%;
+  position:absolute;
+  z-index: 99;
+
 }
 
 .bigletter {
@@ -44,5 +52,21 @@ $roboto: 'Roboto', serif;
   font-size: 7rem;
 }
 
+li {
+  list-style: none;
+}
 
+.navbar-light .navbar-nav .nav-link {
+  color: $pink-color;
+  text-transform: uppercase;
+  font-weight: bold;
+
+}
+
+.subheading {
+  font-family: $roboto; 
+  font-weight: normal;
+  font-size: 3rem;
+  margin-top: 3rem;
+}
 

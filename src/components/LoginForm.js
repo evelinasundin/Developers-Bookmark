@@ -27,6 +27,7 @@ const LoginForm = (props) => {
           <button className="btn btn-primary m-3" onClick={props.signIn}>
             Login
           </button>
+          <div> <p> {props.error.message} </p> </div>
       </div>
 
 )
