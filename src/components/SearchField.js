@@ -14,8 +14,6 @@ const SearchField = props => {
             onChange={props.onChange}
             value={props.value}
           /> 
-          <button onClick={props.renderSearchPosts}> 
-              </button>
         </div>
     );
 }

@@ -219,13 +219,16 @@ class App extends Component {
             renderSearchPosts={this.renderSearchPosts}
           />
         )}
+        {this.state.user &&
+        <button>Show Saved Posts </button> }
         {this.state.user && (
           <SelectField onChange={this.filterByCategory} value={category} />
         )}
+
         {this.state.user && <CreatePost uid={this.state.uid} />}
         {this.state.user && (
           <ListPosts
-            allPosts={this.state.allPosts}
+            allPosts={this.state.allPosts} 
             data={postsToRender}
             savePost={this.savePost}
             onChange={this.onChange}
