@@ -6,8 +6,8 @@ import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import CreatePost from "./components/CreatePost";
 import ListPosts from "./components/ListPosts";
-import SearchField from "./components/SearchField"
-import SelectField from "./components/SelectField"
+import SearchField from "./components/SearchField";
+import SelectField from "./components/SelectField";
 
 const db = firebase.database();
 const at = firebase.auth();
@@ -24,7 +24,7 @@ class App extends Component {
     searchTerm: "",
     category: "",
     postsByCategory: [],
-    userSavedPosts: []
+    displayName: ""
   };
 
   componentDidMount() {
@@ -36,8 +36,13 @@ class App extends Component {
 
     at.onAuthStateChanged(user => {
       if (user) {
-        this.setState({ user: user, uid: user.uid, user });
+        this.setState({ user: user, uid: user.uid });
         console.log(user);
+        //kollar så usersavedposts hålls uppdaterat
+        firebase
+          .database()
+          .ref(`users/${user.uid}/userSavedPosts`)
+          .on("value", snapshot => {});
       } else {
         this.setState({ user: "" });
       }
@@ -75,21 +80,44 @@ class App extends Component {
     db.ref("allPosts").push(post);
   };
 
-  filterByCategory = (e) => {
+  filterByCategory = e => {
     const postsByCategory = this.state.allPosts.filter(post => {
-      return post.value.category.includes(e.target.value)
-    })
-    this.setState({ postsByCategory : postsByCategory, category: e.target.value });
-  }
+      return post.value.category.includes(e.target.value);
+    });
+    this.setState({
+      postsByCategory: postsByCategory,
+      category: e.target.value
+    });
+  };
 
   createUser = e => {
     e.preventDefault();
     at
       .createUserWithEmailAndPassword(this.state.username, this.state.password)
-      .then(user => console.log("created", user))
-      .catch(error => {
-        this.setState({ error });
-      });
+      .then(user => {
+        user
+          .updateProfile({
+            displayName: this.state.displayName
+          })
+          .then(() => {
+            db
+              .ref(`users/${user.uid}`)
+              .set({
+                username: user.email,
+                uid: user.uid,
+                displayName: user.displayName
+              }); //om ett värde inte finns komer det bli null i firebase
+          });
+      })
+      .catch(error => console.log(error));
+  };
+
+  //gets chosen post from onClick function on Save Button in ListPosts
+  savePost = chosenPost => {
+    console.log(chosenPost);
+
+    //gets current user and pushes chosenPost into new array calles usersSavedPosts which is created here
+    db.ref(`users/${this.state.user.uid}/userSavedPosts`).push(chosenPost);
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -110,15 +138,21 @@ class App extends Component {
   render() {
     console.log(this.state.allPosts);
 
-    const {category, postsByCategory, allPosts, searchTerm} = this.state;
+    const { category, postsByCategory, allPosts, searchTerm } = this.state;
 
     let postsToRender = category ? postsByCategory : allPosts;
 
-    postsToRender = searchTerm ? postsToRender.filter(post => post.value.description.toLowerCase().includes(searchTerm.toLowerCase())) : postsToRender;
+    postsToRender = searchTerm
+      ? postsToRender.filter(post =>
+          post.value.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        )
+      : postsToRender;
 
     console.log(postsToRender);
 
-
+    console.log(this.state.user);
 
     return (
       <div className="App">
@@ -151,6 +185,7 @@ class App extends Component {
               createUser={this.createUser}
               onChange={this.onChange}
               error={this.state.errorMessage}
+              displayName={this.state.displayName}
             />
           )}
           {!this.state.user &&
@@ -158,22 +193,44 @@ class App extends Component {
             <p className="heading">
               {" "}
               Bookmark <p className="bigletter">&</p> share your favorite
-              websites with other developers, designers and creatives{" "}
+              websites with other developers, designers and creatives.{" "}
             </p>
           )}
           {this.state.user && (
             <p className="heading">
               {" "}
-              Welcome {this.state.user.email}!{" "}
-              <p className="subheading"> Let's get started! </p>{" "}
+              {/* if not user.display is updated write state displayname which holds info what user wrote */}
+              Welcome{" "}
+              {this.state.user.displayName ? (
+                this.state.user.displayName
+              ) : (
+                this.state.displayName
+              )}! <p className="subheading"> Let's get started! </p>{" "}
             </p>
           )}
           <div className="box" />
+          {!this.state.user && <i className="fa fa-github-square fa-4x" aria-hidden="true" /> }
         </div>
-         <SearchField name="searchTerm" value={this.state.searchTerm} onChange={this.onChange} renderSearchPosts={this.renderSearchPosts}/>
-         <SelectField onChange ={this.filterByCategory} value={category} />
+        {this.state.user && (
+          <SearchField
+            name="searchTerm"
+            value={this.state.searchTerm}
+            onChange={this.onChange}
+            renderSearchPosts={this.renderSearchPosts}
+          />
+        )}
+        {this.state.user && (
+          <SelectField onChange={this.filterByCategory} value={category} />
+        )}
         {this.state.user && <CreatePost uid={this.state.uid} />}
-        {this.state.user && <ListPosts allPosts={this.state.allPosts} data={postsToRender}/>}
+        {this.state.user && (
+          <ListPosts
+            allPosts={this.state.allPosts}
+            data={postsToRender}
+            savePost={this.savePost}
+            onChange={this.onChange}
+          />
+        )}
       </div>
     );
   }

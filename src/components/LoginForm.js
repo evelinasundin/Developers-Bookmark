@@ -14,7 +14,7 @@ const LoginForm = props => {
             onChange={props.onChange}
           />
           <input
-            type="text"
+            type="password"
             name="password"
             className="form-control m-3"
             placeholder="Password"

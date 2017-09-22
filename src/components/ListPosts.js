@@ -5,7 +5,7 @@ const ListPosts = props => {
 
   const list = props.data.map((item, index) => {
     console.log(item.value.title);
-
+    
 
     return (
       <li key={item.key}>
@@ -18,6 +18,8 @@ const ListPosts = props => {
             <p className="card-text"> {item.value.description} </p>
             <p className="card-text"> {item.value.category} </p>
           </div>
+          <button value={item.key} onClick={() => props.savePost(item)}> Save Post </button>
+          <button> Go to website </button>
         </div>
       </li>
     );
