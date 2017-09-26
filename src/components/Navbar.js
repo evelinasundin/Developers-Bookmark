@@ -16,10 +16,15 @@ const Navbar = props => {
         <span className="navbar-toggler-icon" />
       </button>
 
+      
       <a className="navbar-brand" href="">
         {" "}
-        <img style={{ height: "100px" }} src={logo} />{" "}
+        <img style={{ height: "90px" }} src={logo} alt="dblogo" />{" "}
       </a>
+      <a className="navbar-brand notlogged" href="">
+       Developer's Bookmark
+      </a>
+
 
       <div className="collapse navbar-collapse" id="nav-content">
         <ul className="navbar-nav ml-auto">

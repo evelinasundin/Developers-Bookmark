@@ -7,7 +7,7 @@ const SearchField = props => {
     return (
     <div>
        <input
-            className="form-control m-3"
+            className="form-control mr-sm-2"
             placeholder="Search..."
             type="text"
             name={props.name}

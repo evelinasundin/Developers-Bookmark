@@ -42,6 +42,7 @@ class CreatePost extends Component {
               placeholder="Title"
               value={this.state.titleValue}
               onChange={this.onChange}
+              required
             />
           </div>
           <div className="form-group">
@@ -53,6 +54,7 @@ class CreatePost extends Component {
               placeholder="https://example.com"
               value={this.state.urlValue}
               onChange={this.onChange}
+              required
             />
           </div>
           <div className="form-group">
@@ -64,6 +66,7 @@ class CreatePost extends Component {
               placeholder="Description of website"
               value={this.state.descriptionValue}
               onChange={this.onChange}
+              required
             />
           </div>
           <div className="form-group">
@@ -75,6 +78,7 @@ class CreatePost extends Component {
               placeholder="Choose Category"
               value={this.state.categoryValue}
               onChange={this.onChange}
+              required
             >
               <option value="Typography">Typography</option>
               <option value="Websites">Beautiful Websites</option>

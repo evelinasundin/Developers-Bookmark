@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import googleLogo from '../logos/google_signin.png'
 
 const RegisterForm = props => {
   return (
@@ -33,8 +34,12 @@ const RegisterForm = props => {
             onChange={props.onChange}
           />
         </div>
-        <input type="submit" value="Register" className="btn btn-primary m-3" />
       </form>
+
+      <input type="submit" value="Register" className="btn btn-primary m-3" />
+      <img src={googleLogo} style={{ height: "40px" }} alt="Sign In with Google" onClick={props.signInWithGoogle} />
+
+      <div className="form-control-feedback"> {props.error}</div> 
     </div>
   );
 };

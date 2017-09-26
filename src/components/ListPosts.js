@@ -3,6 +3,8 @@ import React from "react";
 const ListPosts = props => {
   console.log(props);
 
+  console.log(props.allPosts[1]);
+
   const list = props.data.map((item, index) => {
     console.log(item.value.title);
     
@@ -22,13 +24,16 @@ const ListPosts = props => {
           <button> Go to website </button>
         </div>
       </li>
+
+
     );
 
 
   });
 
   return (
-    <div className="harskadomkommaut">
+      
+    <div className="listpostholder">
       <ul>{list}</ul>
     </div>
   );

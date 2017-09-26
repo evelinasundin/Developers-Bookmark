@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700");
+body {
+  overflow-x: hidden; }
+
 .color-container {
   background: #f9f0ea;
   height: 100vh;
@@ -52,8 +55,42 @@ li {
   margin-right: 30%;
   margin-bottom: 5%; }
 
+.btn-container {
+  padding-top: 2rem;
+  padding-bottom: 2rem; }
+
+.btn-secondary {
+  float: right; }
+
+.nav-item {
+  padding-right: 1rem; }
+
+.db {
+  padding-top: 1rem; }
+
+.listpostholder {
+  margin-top: 5rem; }
+
+.col {
+  text-align: center; }
+
+.btn-primary {
+  color: #495057;
+  background-color: #fff;
+  border-color: #D9D9D9; }
+
+.btn-primary:hover {
+  background-color: #ff584c; }
+
+.btn-primary:hover {
+  background-color: #ff584c; }
+
 .fa {
-  font-size: 100px;
-  color: pink;
-  bottom: 0;
-  right: 0; }
+  color: #ff584c; }
+
+.navbar-brand {
+  font-family: "Roboto", serif;
+  font-weight: 500; }
+
+.navbar-brand {
+  padding-bottom: 30px; }

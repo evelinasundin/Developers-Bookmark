@@ -5,12 +5,13 @@
 $pink-color: #ff584c;
 $beige-color: #f9f0ea;
 $grey-color: #333;
-
-
-//fonts
+$lightgrey-color: #D9D9D9;
 
 $roboto: 'Roboto', serif;
 
+body {
+  overflow-x: hidden;
+}
 
 .color-container {
   background: $beige-color;
@@ -77,10 +78,58 @@ li {
   margin-bottom: 5%;
 }
 
+
+.btn-container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.btn-secondary {
+  float: right;
+}
+
+
+
+.nav-item {
+  padding-right: 1rem;
+}
+
+.db {
+  padding-top: 1rem;
+}
+
+.listpostholder {
+  margin-top: 5rem;
+}
+ 
+.col {
+  text-align: center;
+}
+
+.btn-primary {
+  color:#495057;
+  background-color: #fff ;
+  border-color: $lightgrey-color;
+}
+
+.btn-primary:hover {
+  background-color: $pink-color;
+}
+
+.btn-primary:hover {
+  background-color: $pink-color;
+}
+
 .fa {
-  font-size: 100px;
-  color: pink;
-  bottom: 0;
-  right: 0;
+  color: $pink-color;
+
+}
+
+.navbar-brand {
+  font-family: $roboto;
+  font-weight: 500;
+}
+.navbar-brand {
+  padding-bottom: 30px;
 }
 

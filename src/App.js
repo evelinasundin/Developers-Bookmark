@@ -8,6 +8,8 @@ import CreatePost from "./components/CreatePost";
 import ListPosts from "./components/ListPosts";
 import SearchField from "./components/SearchField";
 import SelectField from "./components/SelectField";
+import ListSavedPosts from "./components/ListSavedPosts";
+import logo from "./logos/logo-pink.png";
 
 const db = firebase.database();
 const at = firebase.auth();
@@ -15,7 +17,7 @@ const at = firebase.auth();
 class App extends Component {
   state = {
     allPosts: [],
-    username: "",
+    email: "",
     password: "",
     user: "",
     uid: "",
@@ -24,7 +26,13 @@ class App extends Component {
     searchTerm: "",
     category: "",
     postsByCategory: [],
-    displayName: ""
+    displayName: "",
+    allUsers: [],
+    userSavedPosts: [],
+    error: {
+      message: ""
+    },
+    showWritePost: false
   };
 
   componentDidMount() {
@@ -32,6 +40,18 @@ class App extends Component {
       const posts = toArray(snapshot.val());
       this.setState({ allPosts: posts });
       console.log(this.state.allPosts);
+    });
+
+    // db.ref(`users/${this.state.user.uid.userSavedPosts}`).on("value", snapshot => {
+    //    const getSavedPosts = toArray(snapshot.val());
+    //    this.setState({ userSavedPosts: getSavedPosts });
+    //   console.log(this.state.userSavedPosts);
+    // });
+
+    db.ref("users").on("value", snapshot => {
+      const getUsers = toArray(snapshot.val());
+      this.setState({ allUsers: getUsers });
+      console.log(this.state.allUsers);
     });
 
     at.onAuthStateChanged(user => {
@@ -42,7 +62,8 @@ class App extends Component {
         firebase
           .database()
           .ref(`users/${user.uid}/userSavedPosts`)
-          .on("value", snapshot => {});
+          .on("value", snapshot => {}
+          );
       } else {
         this.setState({ user: "" });
       }
@@ -67,18 +88,24 @@ class App extends Component {
     });
   };
 
-  addPost = () => {
-    const post = {
-      title: this.state.titleValue,
-      description: this.state.descriptionValue,
-      date: new Date().toLocaleString(),
-      url: this.state.urlValue,
-      category: this.state.categoryValue,
-      userID: this.props.uid
-    };
+  toggleShowWritePost = () => {
+    this.setState({
+      showWritePost: !this.state.showWritePost
+    })
+  }
 
-    db.ref("allPosts").push(post);
-  };
+  // addPost = () => {
+  //   const post = {
+  //     title: this.state.titleValue,
+  //     description: this.state.descriptionValue,
+  //     date: new Date().toLocaleString(),
+  //     url: this.state.urlValue,
+  //     category: this.state.categoryValue,
+  //     userID: this.props.uid
+  //   };
+
+  //   db.ref("allPosts").push(post);
+  // };
 
   filterByCategory = e => {
     const postsByCategory = this.state.allPosts.filter(post => {
@@ -93,24 +120,36 @@ class App extends Component {
   createUser = e => {
     e.preventDefault();
     at
-      .createUserWithEmailAndPassword(this.state.username, this.state.password)
+      .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(user => {
         user
           .updateProfile({
             displayName: this.state.displayName
           })
           .then(() => {
-            db
-              .ref(`users/${user.uid}`)
-              .set({
-                username: user.email,
-                uid: user.uid,
-                displayName: user.displayName
-              }); //om ett värde inte finns komer det bli null i firebase
+            db.ref(`users/${user.uid}`).set({
+              email: user.email,
+              uid: user.uid,
+              displayName: user.displayName
+            }); //om ett värde inte finns komer det bli null i firebase
           });
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        this.setState({ error });
+      });
   };
+
+  signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then((result)=> {
+    const user = result.user;
+    firebase.database().ref(`users/${user.uid}`).set({ email: user.email, uid: user.uid})
+    }).catch(error => {
+      this.setState({hasError: true})
+      this.setState({error: error.message})
+      console.log(error)
+    })
+  }
 
   //gets chosen post from onClick function on Save Button in ListPosts
   savePost = chosenPost => {
@@ -124,7 +163,7 @@ class App extends Component {
 
   signIn = () => {
     at
-      .signInWithEmailAndPassword(this.state.username, this.state.password)
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(user => console.log("you are signed in", user))
       .catch(error => {
         this.setState({ error });
@@ -136,9 +175,18 @@ class App extends Component {
   };
 
   render() {
-    console.log(this.state.allPosts);
+    // console.log(this.state.allPosts);
 
-    const { category, postsByCategory, allPosts, searchTerm } = this.state;
+    console.log(this.state.allUsers);
+
+    const {
+      category,
+      postsByCategory,
+      allPosts,
+      searchTerm,
+      allUsers,
+      uid
+    } = this.state;
 
     let postsToRender = category ? postsByCategory : allPosts;
 
@@ -152,7 +200,11 @@ class App extends Component {
 
     console.log(postsToRender);
 
-    console.log(this.state.user);
+    // const posts = this.state.allUsers.map(user=>{
+
+    //   return user.value.userSavedPosts;
+    // })
+    //  console.log(posts)
 
     return (
       <div className="App">
@@ -169,23 +221,25 @@ class App extends Component {
           {!this.state.user &&
           (this.state.showLoggedIn && !this.state.showRegister) && (
             <LoginForm
-              username={this.state.username}
+              email={this.state.email}
               password={this.state.password}
               signIn={this.signIn}
               onChange={this.onChange}
-              error={this.state.errorMessage}
+              error={this.state.error.message}
+              signInWithGoogle={this.signInWithGoogle}
             />
           )}
           {/* visa om inte usern är inloggad och när showLoggedIn inte är true men showRegister är true */}
           {!this.state.user &&
           (!this.state.showLoggedIn && this.state.showRegister) && (
             <RegisterForm
-              username={this.state.username}
+              email={this.state.email}
               password={this.state.password}
               createUser={this.createUser}
               onChange={this.onChange}
-              error={this.state.errorMessage}
+              error={this.state.error.message}
               displayName={this.state.displayName}
+              signInWithGoogle={this.signInWithGoogle}
             />
           )}
           {!this.state.user &&
@@ -197,42 +251,95 @@ class App extends Component {
             </p>
           )}
           {this.state.user && (
-            <p className="heading">
-              {" "}
-              {/* if not user.display is updated write state displayname which holds info what user wrote */}
-              Welcome{" "}
-              {this.state.user.displayName ? (
-                this.state.user.displayName
-              ) : (
-                this.state.displayName
-              )}! <p className="subheading"> Let's get started! </p>{" "}
-            </p>
+            <div className="center-content">
+              <p className="heading">
+                {/* if not user.display is updated write state displayname which holds info what user wrote */}
+                Welcome{" "}
+                {this.state.user.displayName ? (
+                  this.state.user.displayName
+                ) : (
+                  this.state.displayName
+                )}!
+              </p>
+            </div>
           )}
           <div className="box" />
-          {!this.state.user && <i className="fa fa-github-square fa-4x" aria-hidden="true" /> }
         </div>
+
         {this.state.user && (
-          <SearchField
-            name="searchTerm"
-            value={this.state.searchTerm}
-            onChange={this.onChange}
-            renderSearchPosts={this.renderSearchPosts}
-          />
-        )}
-        {this.state.user &&
-        <button>Show Saved Posts </button> }
-        {this.state.user && (
-          <SelectField onChange={this.filterByCategory} value={category} />
+          <nav className="navbar navbar-expand-sm navbar-light bg-faded">
+            <button
+              className="navbar-toggler navbar-toggler-right"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon" />
+            </button>
+
+            <a className="navbar-brand" href="">
+              {" "}
+              <img style={{ height: "50px" }} src={logo} />{" "}
+            </a>
+
+            <p className="navbar-brand db"> Developers Bookmark </p>
+
+            <div className="collapse navbar-collapse" id="nav-content">
+              <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                  <SearchField
+                    name="searchTerm"
+                    value={this.state.searchTerm}
+                    onChange={this.onChange}
+                    renderSearchPosts={this.renderSearchPosts}
+                  />
+                </li>
+
+                <li className="nav-item">
+                  <SelectField
+                    onChange={this.filterByCategory}
+                    value={category}
+                  />
+                </li>
+
+                <li className="nav-item">
+                  <button
+                    className="btn btn-primary my-2 my-sm-0"
+                    type="submit"
+                  >
+                    My saved posts{" "}
+                    <i className="fa fa-heart" aria-hidden="true" />
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-primary my-2 my-sm-0"
+                    type="submit"
+                    onClick={this.toggleShowWritePost}
+                  >
+                    Write Post{" "}
+                    <i className="fa fa-pencil-square-o" aria-hidden="true" />
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </nav>
         )}
 
-        {this.state.user && <CreatePost uid={this.state.uid} />}
+        {this.state.user && (this.state.showWritePost) && <CreatePost uid={this.state.uid} />}
         {this.state.user && (
           <ListPosts
-            allPosts={this.state.allPosts} 
+            allPosts={this.state.allPosts}
             data={postsToRender}
             savePost={this.savePost}
             onChange={this.onChange}
           />
+        )}
+        {this.state.user && (
+          <ListSavedPosts allUsers={this.state.allUsers} uid={uid} />
         )}
       </div>
     );
