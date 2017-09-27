@@ -11,10 +11,10 @@ const RegisterForm = props => {
         <div className="form-group">
           <input
             type="text"
-            name="username"
+            name="email"
             className="form-control m-3"
             placeholder="Email"
-            value={props.username}
+            value={props.email}
             onChange={props.onChange}
           />
           <input
@@ -34,9 +34,8 @@ const RegisterForm = props => {
             onChange={props.onChange}
           />
         </div>
+        <input type="submit" value="Register" className="btn btn-primary m-3" />
       </form>
-
-      <input type="submit" value="Register" className="btn btn-primary m-3" />
       <img src={googleLogo} style={{ height: "40px" }} alt="Sign In with Google" onClick={props.signInWithGoogle} />
 
       <div className="form-control-feedback"> {props.error}</div> 

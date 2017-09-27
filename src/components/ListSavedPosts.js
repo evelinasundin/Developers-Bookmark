@@ -2,87 +2,82 @@ import React from "react";
 
 const ListSavedPosts = props => {
     console.log(props);
-    
-    console.log(props.allUsers);
+    console.log("ALL SAVED", props.allUsers);
+    console.log("EVVE SAVED", props.userSavedPosts);
 
-   
-
-    console.log(props.uid)
-
-    const posts = props.allUsers.map(user=>{
-        
-              return user.value.userSavedPosts
-            })
+    const savedposts = props.userSavedPosts.map((item, index) => {
+        console.log(item);
+        console.log(item.value.title);
+        return item.value
+        console.log(item.value.title);
+        // <p> (item.value.title) </p>
+    }).map((item => {
+        for(let key in item){
+            console.log(item[key]);
+            return <li key={item.key}>
+            <div className="row">
+              <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 logo">
+                <i className="fa fa-sitemap" aria-hidden="true" />
+              </div>
+              <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 website">
+                <h3>{item.value.title}</h3>
+                <div className="card-block">
+                  <p className="card-text"> {item.value.description} </p>
+                </div>
             
-
-    // const myPosts = posts.filter(posts => posts.userID === props.uid)
-
-    // console.log(myPosts)
-    
-      
-
-
-    // const hey = props.allUsers.map((item, index) => {
-    //     console.log(item.value.uid); 
-
-    //map through all the users 
-    // let user = props.allUsers.map(user => {
-    //     const allUsers = user.value.UserSavedPosts.map(item => {
-    //         return <li key = {item.key} > {item.category} </li>
-    //     })  
-
-    // })
-
-        {/* return ( <li key={item.key}>
-            <div className="card">
-              <h3 className="card-hader">{item.value.uid}</h3>
+                <a href={item.value.url}>
+                  {" "}
+                  <button className="btn btn-primary"> Go to website </button>{" "}
+                </a>
+                <div className="categoryfield">
+                  {" "}
+                  <p> {item.value.category} </p>
+                </div>
+              </div>
             </div>
           </li>
-        ); 
+             
+        }
+    }))
 
-    }); */}
-
-
-{/* 
-    let recepie = props.recepies.map(recepie=>{
-        const allIngredients = recepie.value.allIngredients.map(item => {
-           return <li key={uuid.v4()}> {item.ingredient} {item.qty} {item.measurment}</li>
-        })
-         const allToDos = recepie.value.howToDo.map(item => {
-           return <li key={uuid.v4()}> {item.howToDo}</li>
-        })
-        const user = props.users.filter(user => user.value.uid === recepie.value.userId ).map(user => user.value.name)
-
-        return <div key={uuid.v4()} className="media flex-wrap" style={ {width: "100%"}}>
-      
-            <img className="d-flex flex-first mr-3" src={recepie.value.imageURL} alt={recepie.value.recepieName} style={ {width: "10em"}}/>
-        
-        <div className="media-body"> 
-            <h5 className="mt-0">{recepie.value.recepieName} </h5>
-           <small className="text-muted">
-          Recept av {user[0]} </small>
-           <p> {recepie.value.description}</p>
-             <div className="media mt-3">
-                 <div className="media-body">
-                     <div className="d-flex justify-content-start flex-wrap">
-                <div className="p-2">
-                     <h6 className="mt-0">Du behöver:</h6>
-            <ul> {allIngredients}</ul>
-            </div>
-            <div className="p-2 flex-last">
-            <h6 className="mt-0">Gör såhär:</h6>
-            <ol> {allToDos}</ol>
-            </div>
-            </div>
-            </div>
-        </div>
-        </div> */}
-
-    
-    
+    // const posts = props.allUsers.map((item, index) => {
+    //     console.log(item);
+    //     if(props.uid === item.key && item.value.userSavedPosts) {
+    //     return item.value.userSavedPosts
+    //     }
+    //     }).map((item => {
+    //     for(let key in item){
+    //         console.log(item[key])
+    //         return item[key];
+    //     }
+    // })).map((item, index) => {
+    //     console.log(item.value.title);
+    //     return <li key={item.key}>
+    //     <div className="row">
+    //       <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 logo">
+    //         <i className="fa fa-sitemap" aria-hidden="true" />
+    //       </div>
+    //       <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 website">
+    //         <h3>{item.value.title}</h3>
+    //         <div className="card-block">
+    //           <p className="card-text"> {item.value.description} </p>
+    //         </div>
+    //         <a href={item.value.url}>
+    //           {" "}
+    //           <button className="btn btn-primary"> Go to website </button>{" "}
+    //         </a>
+    //         {/* {item.value.userID === props.uid && <button onClick={() => props.removePost(item.key)} className="btn btn-danger"> Remove Post </button>} */}
+    //         <div className="categoryfield">
+    //           {" "}
+    //           <p> {item.value.category} </p>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </li>
+    // })
       return (
         <div className="harskadomkommaut">
-        {/* <ul>{user}</ul> */}
+         <ul>{savedposts}</ul>
         </div>
       );
     };

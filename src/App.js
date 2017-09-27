@@ -32,14 +32,17 @@ class App extends Component {
     error: {
       message: ""
     },
-    showWritePost: false
+    showWritePost: false,
+    showSavedPosts: false,
+    userSavedPosts: []
   };
 
   componentDidMount() {
     db.ref("allPosts").on("value", snapshot => {
+      // console.log("from component did mount" + snapshot.val());
       const posts = toArray(snapshot.val());
       this.setState({ allPosts: posts });
-      console.log(this.state.allPosts);
+      // console.log("from component" + this.state.allPosts);
     });
 
     // db.ref(`users/${this.state.user.uid.userSavedPosts}`).on("value", snapshot => {
@@ -51,19 +54,23 @@ class App extends Component {
     db.ref("users").on("value", snapshot => {
       const getUsers = toArray(snapshot.val());
       this.setState({ allUsers: getUsers });
-      console.log(this.state.allUsers);
+      // console.log(this.state.allUsers);
     });
 
     at.onAuthStateChanged(user => {
       if (user) {
         this.setState({ user: user, uid: user.uid });
-        console.log(user);
+        // console.log(user);
         //kollar så usersavedposts hålls uppdaterat
-        firebase
-          .database()
+        db
           .ref(`users/${user.uid}/userSavedPosts`)
-          .on("value", snapshot => {}
-          );
+          .on("value", snapshot => {
+            console.log('User saved post', snapshot.val())
+            let userSavedPosts = toArray(snapshot.val());
+            this.setState({ userSavedPosts : userSavedPosts })
+
+
+          });
       } else {
         this.setState({ user: "" });
       }
@@ -88,11 +95,19 @@ class App extends Component {
     });
   };
 
+
+  toggleShowSavedPosts = () => {
+    this.setState({
+      showSavedPosts: !this.state.showSavedPosts,
+    });
+
+  }
+
   toggleShowWritePost = () => {
     this.setState({
       showWritePost: !this.state.showWritePost
-    })
-  }
+    });
+  };
 
   // addPost = () => {
   //   const post = {
@@ -117,7 +132,20 @@ class App extends Component {
     });
   };
 
+  signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    at().signInWithPopup(provider).then((result)=> {
+    const user = result.user;
+    db().ref(`users/${user.uid}`).set({ email: user.email, uid: user.uid})
+    }).catch(error => {
+      this.setState({hasError: true})
+      this.setState({error: error.message})
+      // console.log(error)
+    })
+  }
+
   createUser = e => {
+    // console.log("hej");
     e.preventDefault();
     at
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -139,25 +167,17 @@ class App extends Component {
       });
   };
 
-  signInWithGoogle = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then((result)=> {
-    const user = result.user;
-    firebase.database().ref(`users/${user.uid}`).set({ email: user.email, uid: user.uid})
-    }).catch(error => {
-      this.setState({hasError: true})
-      this.setState({error: error.message})
-      console.log(error)
-    })
-  }
-
   //gets chosen post from onClick function on Save Button in ListPosts
   savePost = chosenPost => {
-    console.log(chosenPost);
+    // console.log(chosenPost);
 
     //gets current user and pushes chosenPost into new array calles usersSavedPosts which is created here
     db.ref(`users/${this.state.user.uid}/userSavedPosts`).push(chosenPost);
   };
+
+  removePost = item => {
+    db.ref(`allPosts/${item}`).remove(); 
+  }
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
@@ -177,7 +197,11 @@ class App extends Component {
   render() {
     // console.log(this.state.allPosts);
 
-    console.log(this.state.allUsers);
+    // console.log(this.state.allUsers);
+
+    console.log(this.state.userSavedPosts);
+
+    console.log(this.state.user.uid);
 
     const {
       category,
@@ -198,7 +222,7 @@ class App extends Component {
         )
       : postsToRender;
 
-    console.log(postsToRender);
+    // console.log(postsToRender);
 
     // const posts = this.state.allUsers.map(user=>{
 
@@ -267,7 +291,10 @@ class App extends Component {
         </div>
 
         {this.state.user && (
-          <nav className="navbar navbar-expand-sm navbar-light bg-faded">
+          <nav
+            className="navbar navbar-expand-sm navbar-light bg-faded"
+            id="logedinnav"
+          >
             <button
               className="navbar-toggler navbar-toggler-right"
               type="button"
@@ -284,8 +311,6 @@ class App extends Component {
               {" "}
               <img style={{ height: "50px" }} src={logo} />{" "}
             </a>
-
-            <p className="navbar-brand db"> Developers Bookmark </p>
 
             <div className="collapse navbar-collapse" id="nav-content">
               <ul className="navbar-nav ml-auto">
@@ -309,6 +334,7 @@ class App extends Component {
                   <button
                     className="btn btn-primary my-2 my-sm-0"
                     type="submit"
+                    onClick={this.toggleShowSavedPosts}
                   >
                     My saved posts{" "}
                     <i className="fa fa-heart" aria-hidden="true" />
@@ -329,18 +355,22 @@ class App extends Component {
           </nav>
         )}
 
-        {this.state.user && (this.state.showWritePost) && <CreatePost uid={this.state.uid} />}
-        {this.state.user && (
+        {this.state.user &&
+        this.state.showWritePost && <CreatePost uid={this.state.uid} />}
+        {this.state.user && !this.state.showSavedPosts &&
           <ListPosts
             allPosts={this.state.allPosts}
             data={postsToRender}
             savePost={this.savePost}
             onChange={this.onChange}
+            removePost={this.removePost}
+            user={this.state.user}
+            uid={this.state.user.uid}
           />
-        )}
-        {this.state.user && (
-          <ListSavedPosts allUsers={this.state.allUsers} uid={uid} />
-        )}
+        }
+        {this.state.user && this.state.showSavedPosts && 
+          <ListSavedPosts allUsers={this.state.allUsers} uid={this.state.user.uid}  userSavedPosts ={this.state.userSavedPosts} />
+        }
       </div>
     );
   }
@@ -359,3 +389,4 @@ function toArray(firebaseObject) {
   return array;
 }
 export default App;
+

@@ -27,7 +27,7 @@ body {
   border-right-width: 0px;
   border-left-width: 600px;
   border-bottom: 300px solid $pink-color;
-  position: fixed; 
+   position: absolute; 
   right: 0;
   bottom: 0;
   z-index: 50;
@@ -118,6 +118,11 @@ li {
 
 .btn-primary:hover {
   background-color: $pink-color;
+  border: none;
+}
+
+.btn:focus {
+  border: none;
 }
 
 .fa {
@@ -128,8 +133,48 @@ li {
 .navbar-brand {
   font-family: $roboto;
   font-weight: 500;
+  padding-top: 15px;
 }
-.navbar-brand {
-  padding-bottom: 30px;
+
+#logedinnav {
+  border-top: 1px solid $lightgrey-color;
+  border-bottom: 1px solid $lightgrey-color;
+}
+
+#ullist {
+  padding: 0;
+}
+
+.logo {
+  text-align: center;
+  padding: 50px 20px 20px 20px;
+  border: 1px solid $lightgrey-color;
+}
+
+.website {
+  text-align: center;
+  padding: 20px 20px 20px 20px;
+  position: relative;
+}
+
+.fa-sitemap:before {
+  font-size: 6rem;
+  margin-top: 20px;
+}
+
+.fa:hover {
+  color: white;
+}
+
+.row {
+  margin-top: 40px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.categoryfield {
+  bottom: 0;
+  position: absolute;
+  background-color: $pink-color;
 }
 
