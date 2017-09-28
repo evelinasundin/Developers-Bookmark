@@ -1,10 +1,9 @@
 import React from "react";
 
 const ListPosts = props => {
+  //maps through props.data since array to be able to reach item values
 
   const list = props.data.map((item, index) => {
-  
-
     return (
       <li key={item.key}>
         <div className="row">
@@ -28,7 +27,15 @@ const ListPosts = props => {
               {" "}
               <button className="btn btn-primary"> Go to website </button>{" "}
             </a>
-            {item.value.userID === props.uid && <button onClick={() => props.removePost(item.key)} className="btn btn-danger"> Remove Post </button>}
+            {item.value.userID === props.uid && (
+              <button
+                onClick={() => props.removePost(item.key)}
+                className="btn btn-danger"
+              >
+                {" "}
+                Remove Post{" "}
+              </button>
+            )}
             <div className="categoryfield">
               {" "}
               <p className="category"> Category: {item.value.category} </p>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import googleLogo from '../logos/google_signin.png'
+import googleLogo from "../logos/google_signin.png";
 
 const RegisterForm = props => {
   return (
@@ -36,9 +36,14 @@ const RegisterForm = props => {
         </div>
         <input type="submit" value="Register" className="btn btn-primary m-3" />
       </form>
-      <img src={googleLogo} style={{ height: "40px" }} alt="Sign In with Google" onClick={props.signInWithGoogle} />
+      <img
+        src={googleLogo}
+        style={{ height: "40px" }}
+        alt="Sign In with Google"
+        onClick={props.signInWithGoogle}
+      />
 
-      <div className="form-control-feedback"> {props.error}</div> 
+      <div className="form-control-feedback"> {props.error}</div>
     </div>
   );
 };

@@ -77,10 +77,14 @@ li {
 .btn-primary {
   color: #495057;
   background-color: #fff;
-  border-color: #D9D9D9; }
+  border-color: #d9d9d9; }
 
 .btn-primary:hover {
   background-color: #ff584c; }
+
+.btn-primary:hover {
+  background-color: #ff584c;
+  border: none; }
 
 .btn-primary:hover {
   background-color: #ff584c;
@@ -98,8 +102,8 @@ li {
   padding-top: 15px; }
 
 #logedinnav {
-  border-top: 1px solid #D9D9D9;
-  border-bottom: 1px solid #D9D9D9;
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
   border-spacing: 10px; }
 
 #ullist {
@@ -108,7 +112,7 @@ li {
 .logo {
   text-align: center;
   padding: 100px 100px 100px 100px;
-  border: 1px solid #D9D9D9; }
+  border: 1px solid #d9d9d9; }
 
 .website {
   text-align: center;
@@ -119,7 +123,7 @@ li {
   font-size: 6rem;
   margin-top: 20px; }
 
-.fa:hover {
+.fa-heart:hover {
   color: white; }
 
 .row {
@@ -159,4 +163,29 @@ li {
 
 .category {
   font-style: italic;
-  color: #D9D9D9; }
+  color: #d9d9d9; }
+
+.savedposttitle {
+  text-align: center;
+  font-family: "Roboto", serif;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-size: 2.5rem; }
+
+@media only screen and (max-width: 800px) {
+  .heading {
+    font-size: 50px; }
+  .subheading {
+    font-size: 12px;
+    margin-top: 200px; }
+  .description {
+    margin-bottom: 10px; }
+  .categoryfield {
+    bottom: -30px; } }
+
+@media only screen and (max-width: 800px) and (min-width: 1000px) {
+  .heading {
+    font-size: 50px; }
+  .subheading {
+    font-size: 20px;
+    margin-top: 200px; } }

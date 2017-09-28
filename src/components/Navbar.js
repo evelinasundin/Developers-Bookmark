@@ -16,19 +16,17 @@ const Navbar = props => {
         <span className="navbar-toggler-icon" />
       </button>
 
-      
       <a className="navbar-brand" href="">
         {" "}
         <img style={{ height: "90px" }} src={logo} alt="dblogo" />{" "}
       </a>
       <a className="navbar-brand notlogged" href="">
-       Developer's Bookmark
+        Developer's Bookmark
       </a>
-
 
       <div className="collapse navbar-collapse" id="nav-content">
         <ul className="navbar-nav ml-auto">
-          {/*om INTE användaren är inloggad*/}
+          {/* if user is not loged in*/}
           {!props.user && (
             <li className="nav-item">
               <a className="nav-link" href="#" onClick={props.toggleLogin}>
@@ -36,7 +34,7 @@ const Navbar = props => {
               </a>
             </li>
           )}
-          {/*om INTE användaren är inloggad*/}
+          {/*if user is not loged in*/}
           {!props.user && (
             <li className="nav-item">
               <a className="nav-link " href="#" onClick={props.toggleRegister}>
@@ -44,7 +42,7 @@ const Navbar = props => {
               </a>
             </li>
           )}
-          {/*om användaren ÄR inloggad*/}
+          {/*if user is loged in */}
           {props.user && (
             <li className="nav-item">
               <a className="nav-link" href="#" onClick={props.signOut}>
@@ -52,12 +50,6 @@ const Navbar = props => {
               </a>
             </li>
           )}
-          {/*om användaren ÄR inloggad*/}
-          {/*{props.user &&
-<li className="nav-item"> 
-<p> Welcome  {props.user.email}! </p>
-</li>
-*/}
         </ul>
       </div>
     </nav>

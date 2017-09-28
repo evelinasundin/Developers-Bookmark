@@ -11,7 +11,7 @@ import SelectField from "./components/SelectField";
 import ListSavedPosts from "./components/ListSavedPosts";
 import logo from "./logos/logo-pink.png";
 
-//
+//deconstruct firebase commands
 
 const db = firebase.database();
 const at = firebase.auth();
@@ -39,7 +39,7 @@ class App extends Component {
     showSavedPosts: false
   };
 
-  //listens to when a post is added in database - callback returns added object 
+  //listens to when a post is added in database - callback returns added object
 
   componentDidMount() {
     db.ref("allPosts").on("child_added", snapshot => {
@@ -59,16 +59,6 @@ class App extends Component {
       this.setState({ allPosts: posts });
     });
 
-    //Lyssnar på när ett nytt objekt eller värde uppdateras med .set() i vår databas. callback returnerar det uppdaterade objektet
-    // db.ref("allPosts").on("child_changed", snapshot => {
-    //   let updateposts = this.state.allPosts.map(item => {
-    //     if (item.key === snapshot.key) {
-    //       return Object.assign({}, item, { value: snapshot.val() }); //Object assign === merge the old object with the new object.
-    //     } else return item;
-    //   });
-    //   this.setState({ allPosts: updateposts });
-    // });
-
     //functions that listens to when users in database is being updated/changed or added in database
 
     db.ref("users").on("child_added", snapshot => {
@@ -79,6 +69,8 @@ class App extends Component {
       this.setState({ allUsers: [...this.state.allUsers, newUser] });
     });
 
+    //listens to when a user object is being changed/updated
+
     db.ref("users").on("child_changed", snapshot => {
       let updateusers = this.state.allUsers.map(item => {
         if (item.key === snapshot.key) {
@@ -87,9 +79,6 @@ class App extends Component {
       });
       this.setState({ allUsers: updateusers });
     });
-
-
-
 
     // listens to when user saves a post and pushes the saved post into savedpostarray
     //since you cant remove or change these posts child_added is the only listener needed
@@ -113,7 +102,6 @@ class App extends Component {
       }
     });
   }
-
 
   //all toggle functions - to be able to show and hide elements in app
 
@@ -180,7 +168,7 @@ class App extends Component {
       });
   };
 
-  //
+  //function that creates user and pushes created user into users in database, also sets displayName
 
   createUser = e => {
     // console.log("hej");
@@ -205,21 +193,17 @@ class App extends Component {
       });
   };
 
-  //gets chosen post from onClick function on Save Button in ListPosts
+  //gets chosen post from onClick function on Save Button in ListPosts.js
   savePost = chosenPost => {
-    // console.log(chosenPost);
-
-    //gets current user and pushes chosenPost into new array calles usersSavedPosts which is created here
+    //gets current user and pushes chosenPost into userSavedPost which also is created here if user does not have any saved posts yet
     db.ref(`users/${this.state.user.uid}/userSavedPosts`).push(chosenPost);
   };
+
+  //remove chosen post in database. function is being called in ListPost.js
 
   removePost = item => {
     db.ref(`allPosts/${item}`).remove();
   };
-
-  // removeSavedPost = item => {
-  //   db.ref(`users/${user.uid}/userSavedPosts/${item}`).remove();
-  // }
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
@@ -237,23 +221,41 @@ class App extends Component {
   };
 
   render() {
-    // console.log(this.state.allPosts);
+    //deconstruct functions
+    const {
+      toggleLogin,
+      toggleRegister,
+      toggleShowSavedPosts,
+      toggleShowWritePost,
+      filterByCategory,
+      signInWithGoogle,
+      createUser,
+      savePost,
+      removePost,
+      onChange,
+      signIn,
+      signOut
+    } = this;
 
-    // console.log(this.state.allUsers);
-
-    // console.log(this.state.userSavedPosts);
-
-    // console.log(this.state.user.uid);
+    //deconstruct state
 
     const {
+      allPosts,
+      email,
+      password,
+      user,
+      uid,
+      showLoggedIn,
+      showRegister,
+      searchTerm,
       category,
       postsByCategory,
-      allPosts,
-      searchTerm,
+      savedPostsByCategory,
+      displayName,
       allUsers,
-      uid,
       userSavedPosts,
-      savedPostsByCategory
+      showWritePost,
+      showSavedPosts
     } = this.state;
 
     let postsToRender = category ? postsByCategory : allPosts;
@@ -266,36 +268,17 @@ class App extends Component {
         )
       : postsToRender;
 
-    // let savedPostsToRender = category ? savedPostsByCategory : userSavedPosts;
-
-    // savedPostsToRender = searchTerm
-    // ? savedPostsToRender.filter(post =>
-    //   post.value.description
-    // .toLowerCase()
-    // .includes(searchTerm.toLowerCase())
-    // )
-    // :savedPostsToRender;
-
-    // console.log(postsToRender);
-
-    // const posts = this.state.allUsers.map(user=>{
-
-    //   return user.value.userSavedPosts;
-    // })
-    //  console.log(posts)
-
     return (
       <div className="App">
-        {/* <Posts state={this.state}/> */}
         <div className="color-container">
           <Navbar
-            toggleLogin={this.toggleLogin}
-            toggleRegister={this.toggleRegister}
-            user={this.state.user}
-            signOut={this.signOut}
+            toggleLogin={toggleLogin}
+            toggleRegister={toggleRegister}
+            user={user}
+            signOut={signOut}
           />
 
-          {/* visa om inte usern är inloggad och när showLoggedIn är true men inte showRegister */}
+          {/* shof if user is NOT loged in and when showlogin === true and showRegister !true */}
           {!this.state.user &&
           (this.state.showLoggedIn && !this.state.showRegister) && (
             <LoginForm
@@ -307,17 +290,17 @@ class App extends Component {
               signInWithGoogle={this.signInWithGoogle}
             />
           )}
-          {/* visa om inte usern är inloggad och när showLoggedIn inte är true men showRegister är true */}
+          {/* show if user is NOT loged in and when showlogedin not is !true but showregister === true */}
           {!this.state.user &&
           (!this.state.showLoggedIn && this.state.showRegister) && (
             <RegisterForm
-              email={this.state.email}
-              password={this.state.password}
-              createUser={this.createUser}
-              onChange={this.onChange}
+              email={email}
+              password={password}
+              createUser={createUser}
+              onChange={onChange}
               error={this.state.error.message}
-              displayName={this.state.displayName}
-              signInWithGoogle={this.signInWithGoogle}
+              displayName={displayName}
+              signInWithGoogle={signInWithGoogle}
             />
           )}
           {!this.state.user &&
@@ -336,15 +319,13 @@ class App extends Component {
                 {this.state.user.displayName ? (
                   this.state.user.displayName
                 ) : (
-                  this.state.displayName
+                  displayName
                 )}!
               </p>
 
               <p className="subheading">
-                This is your personal page where you can take part of peoples
-                favorite websites. And post useful and inspiring pages yourself
-                to share with others.” To save a post to your collection press
-                heart and you can find them under ”my saved posts”
+                This is your personal page where you can take part of peoples favorite websites within development and other creative areas. < br/>
+                You can also add websites that you find inspiring to share with others. Create your own collection of websites by clickling <i className="fa fa-heart" aria-hidden="true" /> and save a bookmark to those websites you find useful.
               </p>
             </div>
           )}
@@ -378,24 +359,20 @@ class App extends Component {
                 <li className="nav-item">
                   <SearchField
                     name="searchTerm"
-                    value={this.state.searchTerm}
-                    onChange={this.onChange}
-                    renderSearchPosts={this.renderSearchPosts}
+                    value={searchTerm}
+                    onChange={onChange}
                   />
                 </li>
 
                 <li className="nav-item">
-                  <SelectField
-                    onChange={this.filterByCategory}
-                    value={category}
-                  />
+                  <SelectField onChange={filterByCategory} value={category} />
                 </li>
 
                 <li className="nav-item">
                   <button
                     className="btn btn-primary my-2 my-sm-0"
                     type="submit"
-                    onClick={this.toggleShowSavedPosts}
+                    onClick={toggleShowSavedPosts}
                   >
                     My saved posts{" "}
                     <i className="fa fa-heart" aria-hidden="true" />
@@ -405,7 +382,7 @@ class App extends Component {
                   <button
                     className="btn btn-primary my-2 my-sm-0"
                     type="submit"
-                    onClick={this.toggleShowWritePost}
+                    onClick={toggleShowWritePost}
                   >
                     Write Post{" "}
                     <i className="fa fa-pencil-square-o" aria-hidden="true" />
@@ -421,34 +398,22 @@ class App extends Component {
         {this.state.user &&
         !this.state.showSavedPosts && (
           <ListPosts
-            allPosts={this.state.allPosts}
+            allPosts={allPosts}
             data={postsToRender}
-            savePost={this.savePost}
-            onChange={this.onChange}
-            removePost={this.removePost}
-            user={this.state.user}
+            savePost={savePost}
+            onChange={onChange}
+            removePost={removePost}
+            user={user}
             uid={this.state.user.uid}
           />
         )}
         {this.state.user &&
         this.state.showSavedPosts && (
-          <ListSavedPosts userSavedPosts={this.state.userSavedPosts} />
+          <ListSavedPosts userSavedPosts={userSavedPosts} />
         )}
       </div>
     );
   }
 }
 
-// function that push firebase objects into array
-
-function toArray(firebaseObject) {
-  let array = [];
-  for (let item in firebaseObject) {
-    array.push({
-      key: item,
-      value: firebaseObject[item]
-    });
-  }
-  return array;
-}
 export default App;

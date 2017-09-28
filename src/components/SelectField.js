@@ -5,7 +5,11 @@ import React from "react";
  * the selected value */
 function SelectField(props) {
   return (
-    <select onChange={props.onChange} value={props.value} className="form-control">
+    <select
+      onChange={props.onChange}
+      value={props.value}
+      className="form-control"
+    >
       <option value=""> All </option>
       <option value="Websites"> Beautiful websites </option>
       <option value="Javascript"> Javascript </option>

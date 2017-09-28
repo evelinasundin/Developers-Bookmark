@@ -5,9 +5,9 @@
 $pink-color: #ff584c;
 $beige-color: #f9f0ea;
 $grey-color: #333;
-$lightgrey-color: #D9D9D9;
+$lightgrey-color: #d9d9d9;
 
-$roboto: 'Roboto', serif;
+$roboto: "Roboto", serif;
 
 body {
   overflow-x: hidden;
@@ -27,12 +27,10 @@ body {
   border-right-width: 0px;
   border-left-width: 600px;
   border-bottom: 300px solid $pink-color;
-   position: absolute; 
+  position: absolute;
   right: 0;
   bottom: 0;
   z-index: 50;
-
-  
 }
 
 .heading {
@@ -41,15 +39,14 @@ body {
   font-size: 4.5rem;
   text-align: center;
   padding-left: 10%;
-  padding-right: 10%; 
+  padding-right: 10%;
   padding-top: 2.5%;
-  position:absolute;
+  position: absolute;
   z-index: 99;
-
 }
 
 .bigletter {
-  display: inline; 
+  display: inline;
   font-size: 7rem;
 }
 
@@ -61,11 +58,10 @@ li {
   color: $pink-color;
   text-transform: uppercase;
   font-weight: bold;
-
 }
 
 .subheading {
-  font-family: $roboto; 
+  font-family: $roboto;
   font-weight: normal;
   font-size: 3rem;
   margin-top: 3rem;
@@ -78,7 +74,6 @@ li {
   margin-bottom: 5%;
 }
 
-
 .btn-container {
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -87,8 +82,6 @@ li {
 .btn-secondary {
   float: right;
 }
-
-
 
 .nav-item {
   padding-right: 1rem;
@@ -101,19 +94,24 @@ li {
 .listpostholder {
   margin-top: 5rem;
 }
- 
+
 .col {
   text-align: center;
 }
 
 .btn-primary {
-  color:#495057;
-  background-color: #fff ;
+  color: #495057;
+  background-color: #fff;
   border-color: $lightgrey-color;
 }
 
 .btn-primary:hover {
   background-color: $pink-color;
+}
+
+.btn-primary:hover {
+  background-color: $pink-color;
+  border: none;
 }
 
 .btn-primary:hover {
@@ -127,7 +125,6 @@ li {
 
 .fa {
   color: $pink-color;
-
 }
 
 .navbar-brand {
@@ -163,7 +160,11 @@ li {
   margin-top: 20px;
 }
 
-.fa:hover {
+// .fa:hover {
+//   color: white;
+// }
+
+.fa-heart:hover {
   color: white;
 }
 
@@ -179,17 +180,15 @@ li {
   position: absolute;
 }
 
-
 .subheading {
   font-family: $roboto;
   font-size: 2rem;
   padding-left: 10%;
-  padding-right: 10%; 
+  padding-right: 10%;
   padding-top: 2.5%;
-  position:absolute;
+  position: absolute;
   z-index: 99;
   margin-top: 8%;
-
 }
 
 .title {
@@ -200,19 +199,54 @@ li {
 
 .title:first-letter {
   text-transform: uppercase;
-  }
-
+}
 
 .description {
-  font-family: $roboto; 
+  font-family: $roboto;
   margin-bottom: 50px;
 }
 
 .description:first-letter {
-text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .category {
   font-style: italic;
   color: $lightgrey-color;
+}
+
+.savedposttitle {
+  text-align: center;
+  font-family: $roboto;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+}
+
+@media only screen and (max-width: 800px) {
+  .heading {
+    font-size: 50px;
+  }
+  .subheading {
+    font-size: 12px;
+    margin-top: 200px;
+  }
+
+  .description {
+    margin-bottom: 10px;
+  }
+
+  .categoryfield {
+    bottom: -30px;
+  }
+}
+
+@media only screen and (max-width: 800px) and (min-width: 1000px) {
+  .heading {
+    font-size: 50px;
+  }
+  .subheading {
+    font-size: 20px;
+    margin-top: 200px;
+  }
 }
