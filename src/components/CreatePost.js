@@ -91,6 +91,7 @@ class CreatePost extends Component {
               <option value="Indesign">InDesign</option>
               <option value="Aftereffects">After Effects</option>
               <option value="Premierepro">Premier Pro</option>
+              <option value="API">API</option>
             </select>
           </div>
           <input

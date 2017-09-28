@@ -11,6 +11,8 @@ import SelectField from "./components/SelectField";
 import ListSavedPosts from "./components/ListSavedPosts";
 import logo from "./logos/logo-pink.png";
 
+//
+
 const db = firebase.database();
 const at = firebase.auth();
 
@@ -26,6 +28,7 @@ class App extends Component {
     searchTerm: "",
     category: "",
     postsByCategory: [],
+    savedPostsByCategory: [],
     displayName: "",
     allUsers: [],
     userSavedPosts: [],
@@ -33,43 +36,77 @@ class App extends Component {
       message: ""
     },
     showWritePost: false,
-    showSavedPosts: false,
-    userSavedPosts: []
+    showSavedPosts: false
   };
 
+  //listens to when a post is added in database - callback returns added object 
+
   componentDidMount() {
-    db.ref("allPosts").on("value", snapshot => {
-      // console.log("from component did mount" + snapshot.val());
-      const posts = toArray(snapshot.val());
-      this.setState({ allPosts: posts });
-      // console.log("from component" + this.state.allPosts);
+    db.ref("allPosts").on("child_added", snapshot => {
+      const newPost = {
+        value: snapshot.val(),
+        key: snapshot.key
+      };
+      this.setState({ allPosts: [...this.state.allPosts, newPost] });
     });
 
-    // db.ref(`users/${this.state.user.uid.userSavedPosts}`).on("value", snapshot => {
-    //    const getSavedPosts = toArray(snapshot.val());
-    //    this.setState({ userSavedPosts: getSavedPosts });
-    //   console.log(this.state.userSavedPosts);
+    //listens to when a post is being removed from database - callback returns removed object
+
+    db.ref("allPosts").on("child_removed", snapshot => {
+      let posts = this.state.allPosts.filter(item => {
+        return item.key !== snapshot.key;
+      });
+      this.setState({ allPosts: posts });
+    });
+
+    //Lyssnar på när ett nytt objekt eller värde uppdateras med .set() i vår databas. callback returnerar det uppdaterade objektet
+    // db.ref("allPosts").on("child_changed", snapshot => {
+    //   let updateposts = this.state.allPosts.map(item => {
+    //     if (item.key === snapshot.key) {
+    //       return Object.assign({}, item, { value: snapshot.val() }); //Object assign === merge the old object with the new object.
+    //     } else return item;
+    //   });
+    //   this.setState({ allPosts: updateposts });
     // });
 
-    db.ref("users").on("value", snapshot => {
-      const getUsers = toArray(snapshot.val());
-      this.setState({ allUsers: getUsers });
-      // console.log(this.state.allUsers);
+    //functions that listens to when users in database is being updated/changed or added in database
+
+    db.ref("users").on("child_added", snapshot => {
+      const newUser = {
+        value: snapshot.val(),
+        key: snapshot.key
+      };
+      this.setState({ allUsers: [...this.state.allUsers, newUser] });
     });
+
+    db.ref("users").on("child_changed", snapshot => {
+      let updateusers = this.state.allUsers.map(item => {
+        if (item.key === snapshot.key) {
+          return Object.assign({}, item, { value: snapshot.val() }); //Object assign === merge the old object with the new object.
+        } else return item;
+      });
+      this.setState({ allUsers: updateusers });
+    });
+
+
+
+
+    // listens to when user saves a post and pushes the saved post into savedpostarray
+    //since you cant remove or change these posts child_added is the only listener needed
 
     at.onAuthStateChanged(user => {
       if (user) {
         this.setState({ user: user, uid: user.uid });
-        // console.log(user);
-        //kollar så usersavedposts hålls uppdaterat
         db
           .ref(`users/${user.uid}/userSavedPosts`)
-          .on("value", snapshot => {
-            console.log('User saved post', snapshot.val())
-            let userSavedPosts = toArray(snapshot.val());
-            this.setState({ userSavedPosts : userSavedPosts })
-
-
+          .on("child_added", snapshot => {
+            const userSavedPost = {
+              value: snapshot.val(),
+              key: snapshot.key
+            };
+            this.setState({
+              userSavedPosts: [...this.state.userSavedPosts, userSavedPost]
+            });
           });
       } else {
         this.setState({ user: "" });
@@ -77,7 +114,10 @@ class App extends Component {
     });
   }
 
-  //när showloggedin === true då ska showRegister vara false
+
+  //all toggle functions - to be able to show and hide elements in app
+
+  //when showLoggedin === true, showRegister === false, toggles
 
   toggleLogin = () => {
     this.setState({
@@ -86,7 +126,7 @@ class App extends Component {
     });
   };
 
-  //när showRegister === true då ska showLoggedIn vara false
+  //when showRegister === true, showLoggedIn === false
 
   toggleRegister = () => {
     this.setState({
@@ -95,13 +135,11 @@ class App extends Component {
     });
   };
 
-
   toggleShowSavedPosts = () => {
     this.setState({
-      showSavedPosts: !this.state.showSavedPosts,
+      showSavedPosts: !this.state.showSavedPosts
     });
-
-  }
+  };
 
   toggleShowWritePost = () => {
     this.setState({
@@ -109,40 +147,40 @@ class App extends Component {
     });
   };
 
-  // addPost = () => {
-  //   const post = {
-  //     title: this.state.titleValue,
-  //     description: this.state.descriptionValue,
-  //     date: new Date().toLocaleString(),
-  //     url: this.state.urlValue,
-  //     category: this.state.categoryValue,
-  //     userID: this.props.uid
-  //   };
-
-  //   db.ref("allPosts").push(post);
-  // };
+  //gets parameter from searchfield.js and filters the posts that contains the selected category
+  //and pushes it into state postsByCategory
 
   filterByCategory = e => {
     const postsByCategory = this.state.allPosts.filter(post => {
       return post.value.category.includes(e.target.value);
     });
+
     this.setState({
       postsByCategory: postsByCategory,
       category: e.target.value
     });
   };
 
+  // google sign in
+
   signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    at().signInWithPopup(provider).then((result)=> {
-    const user = result.user;
-    db().ref(`users/${user.uid}`).set({ email: user.email, uid: user.uid})
-    }).catch(error => {
-      this.setState({hasError: true})
-      this.setState({error: error.message})
-      // console.log(error)
-    })
-  }
+    at
+      .signInWithPopup(provider)
+      .then(result => {
+        const user = result.user;
+        db()
+          .ref(`users/${user.uid}`)
+          .set({ email: user.email, uid: user.uid });
+      })
+      .catch(error => {
+        this.setState({ hasError: true });
+        this.setState({ error: error.message });
+        // console.log(error)
+      });
+  };
+
+  //
 
   createUser = e => {
     // console.log("hej");
@@ -176,8 +214,12 @@ class App extends Component {
   };
 
   removePost = item => {
-    db.ref(`allPosts/${item}`).remove(); 
-  }
+    db.ref(`allPosts/${item}`).remove();
+  };
+
+  // removeSavedPost = item => {
+  //   db.ref(`users/${user.uid}/userSavedPosts/${item}`).remove();
+  // }
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
@@ -199,9 +241,9 @@ class App extends Component {
 
     // console.log(this.state.allUsers);
 
-    console.log(this.state.userSavedPosts);
+    // console.log(this.state.userSavedPosts);
 
-    console.log(this.state.user.uid);
+    // console.log(this.state.user.uid);
 
     const {
       category,
@@ -209,7 +251,9 @@ class App extends Component {
       allPosts,
       searchTerm,
       allUsers,
-      uid
+      uid,
+      userSavedPosts,
+      savedPostsByCategory
     } = this.state;
 
     let postsToRender = category ? postsByCategory : allPosts;
@@ -221,6 +265,16 @@ class App extends Component {
             .includes(searchTerm.toLowerCase())
         )
       : postsToRender;
+
+    // let savedPostsToRender = category ? savedPostsByCategory : userSavedPosts;
+
+    // savedPostsToRender = searchTerm
+    // ? savedPostsToRender.filter(post =>
+    //   post.value.description
+    // .toLowerCase()
+    // .includes(searchTerm.toLowerCase())
+    // )
+    // :savedPostsToRender;
 
     // console.log(postsToRender);
 
@@ -270,7 +324,7 @@ class App extends Component {
           (!this.state.showLoggedIn && !this.state.showRegister) && (
             <p className="heading">
               {" "}
-              Bookmark <p className="bigletter">&</p> share your favorite
+              Bookmark <span className="bigletter">&</span> share your favorite
               websites with other developers, designers and creatives.{" "}
             </p>
           )}
@@ -284,6 +338,13 @@ class App extends Component {
                 ) : (
                   this.state.displayName
                 )}!
+              </p>
+
+              <p className="subheading">
+                This is your personal page where you can take part of peoples
+                favorite websites. And post useful and inspiring pages yourself
+                to share with others.” To save a post to your collection press
+                heart and you can find them under ”my saved posts”
               </p>
             </div>
           )}
@@ -357,7 +418,8 @@ class App extends Component {
 
         {this.state.user &&
         this.state.showWritePost && <CreatePost uid={this.state.uid} />}
-        {this.state.user && !this.state.showSavedPosts &&
+        {this.state.user &&
+        !this.state.showSavedPosts && (
           <ListPosts
             allPosts={this.state.allPosts}
             data={postsToRender}
@@ -367,10 +429,11 @@ class App extends Component {
             user={this.state.user}
             uid={this.state.user.uid}
           />
-        }
-        {this.state.user && this.state.showSavedPosts && 
-          <ListSavedPosts allUsers={this.state.allUsers} uid={this.state.user.uid}  userSavedPosts ={this.state.userSavedPosts} />
-        }
+        )}
+        {this.state.user &&
+        this.state.showSavedPosts && (
+          <ListSavedPosts userSavedPosts={this.state.userSavedPosts} />
+        )}
       </div>
     );
   }
@@ -389,4 +452,3 @@ function toArray(firebaseObject) {
   return array;
 }
 export default App;
-

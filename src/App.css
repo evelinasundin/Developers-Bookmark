@@ -99,14 +99,15 @@ li {
 
 #logedinnav {
   border-top: 1px solid #D9D9D9;
-  border-bottom: 1px solid #D9D9D9; }
+  border-bottom: 1px solid #D9D9D9;
+  border-spacing: 10px; }
 
 #ullist {
   padding: 0; }
 
 .logo {
   text-align: center;
-  padding: 50px 20px 20px 20px;
+  padding: 100px 100px 100px 100px;
   border: 1px solid #D9D9D9; }
 
 .website {
@@ -124,9 +125,38 @@ li {
 .row {
   margin-top: 40px;
   margin-left: 50px;
-  margin-right: 50px; }
+  margin-right: 50px;
+  margin-bottom: 40px; }
 
 .categoryfield {
   bottom: 0;
+  position: absolute; }
+
+.subheading {
+  font-family: "Roboto", serif;
+  font-size: 2rem;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 2.5%;
   position: absolute;
-  background-color: #ff584c; }
+  z-index: 99;
+  margin-top: 8%; }
+
+.title {
+  font-family: "Roboto", serif;
+  font-weight: bold;
+  margin-bottom: 20px; }
+
+.title:first-letter {
+  text-transform: uppercase; }
+
+.description {
+  font-family: "Roboto", serif;
+  margin-bottom: 50px; }
+
+.description:first-letter {
+  text-transform: uppercase; }
+
+.category {
+  font-style: italic;
+  color: #D9D9D9; }

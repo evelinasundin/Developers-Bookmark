@@ -139,6 +139,7 @@ li {
 #logedinnav {
   border-top: 1px solid $lightgrey-color;
   border-bottom: 1px solid $lightgrey-color;
+  border-spacing: 10px;
 }
 
 #ullist {
@@ -147,7 +148,7 @@ li {
 
 .logo {
   text-align: center;
-  padding: 50px 20px 20px 20px;
+  padding: 100px 100px 100px 100px;
   border: 1px solid $lightgrey-color;
 }
 
@@ -170,11 +171,48 @@ li {
   margin-top: 40px;
   margin-left: 50px;
   margin-right: 50px;
+  margin-bottom: 40px;
 }
 
 .categoryfield {
   bottom: 0;
   position: absolute;
-  background-color: $pink-color;
 }
 
+
+.subheading {
+  font-family: $roboto;
+  font-size: 2rem;
+  padding-left: 10%;
+  padding-right: 10%; 
+  padding-top: 2.5%;
+  position:absolute;
+  z-index: 99;
+  margin-top: 8%;
+
+}
+
+.title {
+  font-family: $roboto;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.title:first-letter {
+  text-transform: uppercase;
+  }
+
+
+.description {
+  font-family: $roboto; 
+  margin-bottom: 50px;
+}
+
+.description:first-letter {
+text-transform: uppercase;
+}
+
+.category {
+  font-style: italic;
+  color: $lightgrey-color;
+}
